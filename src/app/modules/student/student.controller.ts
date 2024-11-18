@@ -43,7 +43,11 @@ const getAllStudents = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(err);
+    res.status(200).send({
+      success: true,
+      message: "Something went wrong!",
+      error: err,
+    });
   }
 };
 
