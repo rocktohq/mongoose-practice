@@ -46,4 +46,5 @@ export interface Student {
   localGuardian: LocalGuardian;
   profileImg?: string;
   isActive: "active" | "disabled";
+  isDeleted: boolean;
 }

@@ -66,6 +66,8 @@ const studentValidationSchema = Joi.object({
   name: userNameValidationSchema.required().messages({
     "any.required": "Name is required!",
   }),
+
+  age: Joi.number().required(),
   gender: Joi.string().valid("male", "female", "other").required().messages({
     "any.only": "{#value} is not a valid gender!",
     "any.required": "Gender is required!",
@@ -117,6 +119,7 @@ const studentValidationSchema = Joi.object({
   }),
   profileImg: Joi.string().trim().optional(),
   isActive: Joi.string().valid("active", "disabled").default("active"),
+  isDeleted: Joi.boolean().default(false),
 });
 
 export default studentValidationSchema;

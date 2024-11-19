@@ -103,6 +103,10 @@ const studentSchema = new Schema<Student>({
     required: [true, "Name is required!"],
     trim: true,
   },
+  age: {
+    type: Number,
+    required: [true, "Age is required!"],
+  },
   gender: {
     type: String,
     enum: {
@@ -176,6 +180,7 @@ const studentSchema = new Schema<Student>({
     enum: ["active", "disabled"],
     default: "active",
   },
+  isDeleted: { type: Boolean, default: false },
 });
 
 //* Model

@@ -1,23 +1,27 @@
 import { Request, Response } from "express";
 import { StudentServices } from "./student.service";
-import studentValidationSchema from "./student.validate";
+// import studentValidationSchema from "./student.validationJoi";
+import studentValidationZodSchema from "./student.validationZod";
 
 const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = req.body;
 
     // Validate the student data
-    const { error } = studentValidationSchema.validate(studentData);
+    // const { error } = studentValidationSchema.validate(studentData);
+    //Validation with Zod
+    const zodParsedData = studentValidationZodSchema.parse(studentData);
     // Call the service function
-    const result = await StudentServices.createStudentIntoDB(studentData);
+    // const result = await StudentServices.createStudentIntoDB(studentData);
+    const result = await StudentServices.createStudentIntoDB(zodParsedData);
 
-    if (error) {
-      res.status(500).send({
-        success: false,
-        message: "Student validation failed!",
-        error: error.details,
-      });
-    }
+    // if (error) {
+    //   res.status(500).send({
+    //     success: false,
+    //     message: "Student validation failed!",
+    //     error: error.details,
+    //   });
+    // }
 
     // Send the respponse
     res.status(200).send({
