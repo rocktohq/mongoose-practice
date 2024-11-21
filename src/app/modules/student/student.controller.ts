@@ -46,7 +46,7 @@ const getAllStudents = async (req: Request, res: Response) => {
       message: "All students fetched successfully!",
       data: result,
     });
-  } catch (err) {
+  } catch (err: any) {
     res.status(200).send({
       success: true,
       message: "Something went wrong!",
@@ -59,12 +59,20 @@ const getSingleStudent = async (req: Request, res: Response) => {
   try {
     const { studentId } = req.params;
     const result = await StudentServices.getSingleStudentFromDB(studentId);
-    res.status(200).send({
-      success: true,
-      message: "Student fetched successfully!",
-      data: result,
-    });
-  } catch (err) {
+    if (result) {
+      res.status(200).send({
+        success: true,
+        message: "Student fetched successfully!",
+        data: result,
+      });
+    } else {
+      res.status(404).send({
+        success: false,
+        message: `No such student found with ID: ${studentId}!`,
+        data: {},
+      });
+    }
+  } catch (err: any) {
     res.status(500).send({
       success: false,
       message: "Something went wrong!",

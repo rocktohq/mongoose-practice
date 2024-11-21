@@ -6,6 +6,8 @@ import {
   StudentModel,
   TUserName,
 } from "./student.interface";
+import bcrypt from "bcrypt";
+import config from "../../config";
 
 //* Schema
 const userNameSchema = new Schema<TUserName>({
@@ -105,6 +107,11 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     required: [true, "Name is required!"],
     trim: true,
   },
+  password: {
+    type: String,
+    required: [true, "Password is required!"],
+    maxlength: [20, "Password can't be more than 20 chars!"],
+  },
   age: {
     type: Number,
     required: [true, "Age is required!"],
@@ -185,6 +192,43 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   isDeleted: { type: Boolean, default: false },
 });
 
+//* Middlewares
+// 1. Document Middleware: Works only on create() and save() methods
+// Pre-Middleware
+studentSchema.pre("save", async function (next) {
+  // console.log(this, "Prehook: We will save the data.");
+  // Hash password before save()
+  this.password = await bcrypt.hash(this.password, Number(config.saltRounds));
+
+  next();
+});
+
+// Post-Middleware
+studentSchema.post("save", function (doc, next) {
+  // console.log(this, "Posthook: We have saved the data.");
+  doc.password = "";
+
+  next();
+});
+
+// 2. Query Mddleware:
+studentSchema.pre("find", function (next) {
+  // Exclude deleted docs
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+studentSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+//
 //* Instance Methods
 // studentSchema.methods.isUserExists = async function (id: string) {
 //   const existingUser = Student.findOne({ id });
@@ -197,7 +241,7 @@ studentSchema.statics.isUserExists = async function (id: string) {
   return existingUser;
 };
 studentSchema.statics.isEmailExists = async function (email: string) {
-  return await Student.find({ email });
+  return await Student.findOne({ email });
 };
 
 //* Model

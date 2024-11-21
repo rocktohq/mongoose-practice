@@ -3,14 +3,14 @@ import { Student } from "./student.model";
 
 const createStudentIntoDB = async (studentData: TStudent) => {
   // Built-in static method
+  if (await Student.isUserExists(studentData.id)) {
+    throw new Error(`User with id: ${studentData.id} already exists!`);
+  }
+
   if (await Student.isEmailExists(studentData.email)) {
     throw new Error(
       `An user with email: "${studentData.email}" already exists!`,
     );
-  }
-
-  if (await Student.isUserExists(studentData.id)) {
-    throw new Error(`User with id: ${studentData.id} already exists!`);
   }
   const result = await Student.create(studentData);
 
