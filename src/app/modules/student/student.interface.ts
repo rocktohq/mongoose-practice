@@ -1,9 +1,11 @@
-export interface UserName {
+import { Model } from "mongoose";
+
+export interface TUserName {
   firstName: string;
   lastName: string;
 }
 
-export interface Guardian {
+export interface TGuardian {
   fatherName: string;
   fatherOccupation: string;
   fatherContactNo: string;
@@ -11,16 +13,16 @@ export interface Guardian {
   motherContactNo: string;
 }
 
-export interface LocalGuardian {
+export interface TLocalGuardian {
   name: string;
   occupation: string;
   concatNo: string;
   address: string;
 }
 
-export interface Student {
+export interface TStudent {
   id: string;
-  name: UserName;
+  name: TUserName;
   gender: "male" | "female" | "other";
   age: number;
   email: string;
@@ -42,9 +44,26 @@ export interface Student {
     | "O-";
   presentAddress: string;
   permanentAddress: string;
-  guardian: Guardian;
-  localGuardian: LocalGuardian;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
   profileImg?: string;
   isActive: "active" | "disabled";
   isDeleted: boolean;
+}
+
+//* Instance Method
+// export interface StudentMethods {
+//   isUserExists(id: string): Promise<TStudent | null>;
+// }
+
+// export type StudentModel = Model<
+//   TStudent,
+//   Record<string, never>,
+//   StudentMethods
+// >;
+
+//* Static Methods
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
+  isEmailExists(email: string): Promise<TStudent | null>;
 }
