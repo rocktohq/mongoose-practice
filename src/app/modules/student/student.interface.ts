@@ -67,4 +67,5 @@ export interface TStudent {
 export interface StudentModel extends Model<TStudent> {
   isUserExists(id: string): Promise<TStudent | null>;
   isEmailExists(email: string): Promise<TStudent | null>;
+  isDeleted(id: string): Promise<TStudent | null>;
 }

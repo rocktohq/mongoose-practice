@@ -244,5 +244,11 @@ studentSchema.statics.isEmailExists = async function (email: string) {
   return await Student.findOne({ email });
 };
 
+studentSchema.statics.isDeleted = async function (id: string) {
+  return await Student.findOne({
+    $and: [{ id }, { isDeleted: { $eq: true } }],
+  });
+};
+
 //* Model
 export const Student = model<TStudent, StudentModel>("Student", studentSchema);
